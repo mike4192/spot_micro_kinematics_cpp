@@ -5,12 +5,14 @@ project (spot_micro_kinematics)
 
 set(CMAKE_CXX_STANDARD 14)
 
+set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 find_package(Eigen3 REQUIRED NO_MODULE)
 
 # Add an library for the example classes
 add_library(spot_micro_kinematics 
     src/spot_micro_kinematics.cpp
+	src/utils.cpp
 )
 
 target_include_directories(spot_micro_kinematics
@@ -31,12 +33,12 @@ add_subdirectory(3rd_party/google-test)
 enable_testing()
 
 # Add a testing executable
-add_executable(test1 tests/test_1.cpp)
+add_executable(test_utils tests/test_utils.cpp)
 
-target_link_libraries(test1
+target_link_libraries(test_utils
     spot_micro_kinematics
     GTest::GTest 
     GTest::Main
 )
 
-add_test(test_all test1)
+add_test(test_utils test_utils)
