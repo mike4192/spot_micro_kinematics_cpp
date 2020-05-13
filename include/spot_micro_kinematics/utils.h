@@ -24,5 +24,43 @@ Matrix4f homogTransXyz(float x, float y, float z);
 // Returns the inverse of the inputted homogeneous transform. Note that the
 // inverse is not just the inverse of the matrix, but a reversed rotation, and a
 // reversed linear translation. See definition for more details
-Matrix4f homogInverse(Matrix4f ht);
+Matrix4f homogInverse(const Matrix4f& ht);
+
+
+// Returns the homogeneous transformation matrix representing the coordinate
+// system and position of the right back leg of a quadruped. Assumes legs are
+// positioned in the corner of a rectangular plane defined by a length and
+// height. Requires the homogeneous transform representing the body center.
+Matrix4f htLegRightBack(const Matrix4f& ht_body_center, float body_length, float body_width);
+
+
+// Returns the homogeneous transformation matrix representing the coordinate
+// system and position of the right front leg of a quadruped. Assumes legs are
+// positioned in the corner of a rectangular plane defined by a length and
+// height. Requires the homogeneous transform representing the body center.
+Matrix4f htLegRightFront(const Matrix4f& ht_body_center, float body_length, float body_width);
+
+// Returns the homogeneous transformation matrix representing the coordinate
+// system and position of the left front leg of a quadruped. Assumes legs are
+// positioned in the corner of a rectangular plane defined by a length and
+// height. Requires the homogeneous transform representing the body center.
+Matrix4f htLegLeftFront(const Matrix4f& ht_body_center, float body_length, float body_width);
+
+// Returns the homogeneous transformation matrix representing the coordinate
+// system and position of the left back leg of a quadruped. Assumes legs are
+// positioned in the corner of a rectangular plane defined by a length and
+// height. Requires the homogeneous transform representing the body center.
+Matrix4f htLegLeftBack(const Matrix4f& ht_body_center, float body_length, float body_width);
+
+
+// Returns the homogeneous transformation matrix for joint 0 to 1 for a
+// quadruped leg
+Matrix4f ht0To1(float rot_ang, float link_length);
+
+
+
+
+
+
+
 }

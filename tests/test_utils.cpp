@@ -1,11 +1,13 @@
-//#include <iostream>
-//#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Geometry>
-#include "spot_micro_kinematics/utils.h"
-#include <gtest/gtest.h>
 #include <math.h>
 
+#include <iostream>
 
+#include <eigen3/Eigen/Geometry>
+#include <gtest/gtest.h>
+
+#include "spot_micro_kinematics/utils.h"
+
+using namespace std;
 using namespace Eigen;
 
 TEST(homogeneousRotXyz, x_rotation)
@@ -138,5 +140,135 @@ TEST(homogeneousInverse, ht_inverse)
   auto test_point = ht_inv * transformed_point;
 
   EXPECT_TRUE(truth_point.isApprox(test_point.block<3,1>(0,0)));
+
+}
+
+
+TEST(htLeg, rightback)
+{
+  // Create a body homogeneous transform, and verify the leg ht matrix comes out
+  // as expected
+
+  float len = 2.0f;
+  float width = 4.0f;
+  float height = 0.14f;
+
+  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
+                     smk::homogTransXyz(0.0f, -height, 0.0f); 
+
+  Matrix4f ht_rightback_test = smk::htLegRightBack(body_ht, len, width);
+
+  Matrix4f ht_rightback_truth = Matrix4f::Identity();
+
+  ht_rightback_truth <<
+      cos(M_PI/2.0f),       0.0f,       sin(M_PI/2.0f),     -len/2.0f,
+                0.0f,       1.0f,                 0.0f,       -height,
+     -sin(M_PI/2.0f),       0.0f,       cos(M_PI/2.0f),    width/2.0f,
+                0.0f,       0.0f,                 0.0f,          1.0f;
+
+  EXPECT_TRUE(ht_rightback_truth.isApprox(ht_rightback_test));
+
+}
+
+
+TEST(htLeg, rightfront)
+{
+  // Create a body homogeneous transform, and verify the leg ht matrix comes out
+  // as expected
+
+  float len = 2.0f;
+  float width = 4.0f;
+  float height = 0.14f;
+
+  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
+                     smk::homogTransXyz(0.0f, -height, 0.0f); 
+
+  Matrix4f ht_rightfront_test = smk::htLegRightFront(body_ht, len, width);
+
+  Matrix4f ht_rightfront_truth = Matrix4f::Identity();
+
+  ht_rightfront_truth <<
+      cos(M_PI/2.0f),       0.0f,       sin(M_PI/2.0f),      len/2.0f,
+                0.0f,       1.0f,                 0.0f,       -height,
+     -sin(M_PI/2.0f),       0.0f,       cos(M_PI/2.0f),    width/2.0f,
+                0.0f,       0.0f,                 0.0f,          1.0f;
+
+  EXPECT_TRUE(ht_rightfront_truth.isApprox(ht_rightfront_test));
+
+}
+
+
+TEST(htLeg, leftfront)
+{
+  // Create a body homogeneous transform, and verify the leg ht matrix comes out
+  // as expected
+
+  float len = 2.0f;
+  float width = 4.0f;
+  float height = 0.14f;
+
+  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
+                     smk::homogTransXyz(0.0f, -height, 0.0f); 
+
+  Matrix4f ht_leftfront_test = smk::htLegLeftFront(body_ht, len, width);
+
+  Matrix4f ht_leftfront_truth = Matrix4f::Identity();
+
+  ht_leftfront_truth <<
+      cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),      len/2.0f,
+                 0.0f,       1.0f,                  0.0f,       -height,
+     -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
+                 0.0f,       0.0f,                  0.0f,          1.0f;
+
+  EXPECT_TRUE(ht_leftfront_truth.isApprox(ht_leftfront_test));
+
+}
+
+TEST(htLeg, leftback)
+{
+  // Create a body homogeneous transform, and verify the leg ht matrix comes out
+  // as expected
+
+  float len = 2.0f;
+  float width = 4.0f;
+  float height = 0.14f;
+
+  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
+                     smk::homogTransXyz(0.0f, -height, 0.0f); 
+
+  Matrix4f ht_leftback_test = smk::htLegLeftBack(body_ht, len, width);
+
+  Matrix4f ht_leftback_truth = Matrix4f::Identity();
+
+  ht_leftback_truth <<
+      cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),     -len/2.0f,
+                 0.0f,       1.0f,                  0.0f,       -height,
+     -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
+                 0.0f,       0.0f,                  0.0f,          1.0f;
+
+  EXPECT_TRUE(ht_leftback_truth.isApprox(ht_leftback_test));
+
+}
+
+
+TEST(htLegLinkTransforms, ht0To1)
+{
+  
+  // Test the homogenous transform from link 0 to 1 via a contrived example
+  
+  float rot_ang = 35.0f;
+  float link_length = 0.4;
+
+  Matrix4f ht_0_to_1_test = smk::ht0To1(rot_ang, link_length);
+
+  Matrix4f ht_0_to_1_truth = Matrix4f::Identity();
+
+  <ht_0_to_1_truth
+      cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),     -len/2.0f,
+                 0.0f,       1.0f,                  0.0f,       -height,
+     -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
+                 0.0f,       0.0f,                  0.0f,          1.0f;
+
+  EXPECT_TRUE(ht_leftback_truth.isApprox(ht_leftback_test));
 
 }
