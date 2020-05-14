@@ -1,6 +1,6 @@
 #include "spot_micro_kinematics/utils.h"
 
-#include <math.h>
+#include <cmath>
 
 #include <eigen3/Eigen/Geometry>
 
@@ -128,16 +128,73 @@ Matrix4f ht0To1(float rot_ang, float link_length) {
   ht_0_to_1(0,3) = -link_length*cos(rot_ang);
   ht_0_to_1(1,3) = -link_length*sin(rot_ang);
 
+  return ht_0_to_1;
+}
 
+Matrix4f ht1To2() {
+  // Build up the matrix as from the paper
+  Matrix4f ht_1_to_2;
+
+  ht_1_to_2 <<
+      0.0f,   0.0f,   -1.0f,   0.0f,
+     -1.0f,   0.0f,    0.0f,   0.0f,
+      0.0f,   1.0f,    0.0f,   0.0f,
+      0.0f,   0.0f,    0.0f,   1.0f;
+
+  return ht_1_to_2;
 }
 
 
+Matrix4f ht2To3(float rot_ang, float link_length) {
+  
+  // Build up the matrix as from the paper
+  Matrix4f ht_2_to_3 = homogRotXyz(0.0f, 0.0f, rot_ang);
+
+  // Add in remaining terms
+  ht_2_to_3(0,3) = link_length*cos(rot_ang);
+  ht_2_to_3(1,3) = link_length*sin(rot_ang);
+
+  return ht_2_to_3;
+}
+
+Matrix4f ht3To4(float rot_ang, float link_length) {
+  // Same as the 2 to 3 transformation, so just call that function
+  
+  return ht2To3(rot_ang, link_length);
+}
 
 
+Matrix4f ht0To4(float ang1, float ang2, float ang3, float link1, float link2, float link3) {
+// Result is a sequential multiplication of all 4 transform matrices
+return (ht0To1(ang1, link1) * ht1To2() * ht2To3(ang2, link2) * ht3To4(ang3, link3));
 
+}
 
+std::tuple<float, float, float> ikine(float x4, float y4, float z4,
+                                      float link1, float link2, float link3,
+                                      bool is_leg_12) {
+using namespace std;
 
+// Initialize return variables
+float ang1, ang2, ang3;
 
+// Supporting variable D
+float D = (x4*x4 + y4*y4 + z4*z4 - link1*link1 - link2*link2 - link3*link3) /
+          (2*link2*link3);
+
+if (is_leg_12) {
+  ang3 = atan2(sqrt(1 - D*D), D);
+} else {
+  ang3 = atan2(-sqrt(1 - D*D), D);
+}
+
+ang2 = atan2(z4, sqrt(x4*x4 + y4*y4 - link1*link1)) -
+       atan2(link3*sin(ang3), link2 + link3*cos(ang3));
+
+ang1 = atan2(y4, x4) + atan2(sqrt(x4*x4 + y4*y4 - link1*link1), -link1);
+
+return make_tuple(ang1, ang2, ang3);
+} 
 
 
 

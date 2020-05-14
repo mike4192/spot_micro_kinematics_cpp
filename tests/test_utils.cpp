@@ -263,12 +263,80 @@ TEST(htLegLinkTransforms, ht0To1)
 
   Matrix4f ht_0_to_1_truth = Matrix4f::Identity();
 
-  <ht_0_to_1_truth
-      cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),     -len/2.0f,
-                 0.0f,       1.0f,                  0.0f,       -height,
-     -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
-                 0.0f,       0.0f,                  0.0f,          1.0f;
+  ht_0_to_1_truth <<
+      cos(rot_ang),   -sin(rot_ang),    0.0f,   -link_length*cos(rot_ang),
+      sin(rot_ang),    cos(rot_ang),    0.0f,   -link_length*sin(rot_ang),
+              0.0f,            0.0f,    1.0f,                        0.0f,
+              0.0f,            0.0f,    0.0f,                        1.0f;
 
-  EXPECT_TRUE(ht_leftback_truth.isApprox(ht_leftback_test));
+  EXPECT_TRUE(ht_0_to_1_truth.isApprox(ht_0_to_1_test));
+
+}
+
+
+TEST(htLegLinkTransforms, ht1To2)
+{
+  
+  // Test the homogenous transform from link 1 to 2 via a contrived example
+
+  Matrix4f ht_1_to_2_test = smk::ht1To2();
+
+  Matrix4f ht_1_to_2_truth = Matrix4f::Identity();
+
+  ht_1_to_2_truth <<
+              0.0f,            0.0f,   -1.0f,   0.0f,
+             -1.0f,            0.0f,    0.0f,   0.0f,
+              0.0f,            1.0f,    0.0f,   0.0f,
+              0.0f,            0.0f,    0.0f,   1.0f;
+
+  EXPECT_TRUE(ht_1_to_2_truth.isApprox(ht_1_to_2_test));
+
+}
+
+
+TEST(htLegLinkTransforms, ht2To3)
+{
+  // Test the homogenous transform from link 2 to 3 via a contrived example
+  
+  float rot_ang = 35.0f;
+  float link_length = 0.4;
+
+  Matrix4f ht_2_to_3_test = smk::ht2To3(rot_ang, link_length);
+
+  Matrix4f ht_2_to_3_truth = Matrix4f::Identity();
+
+  ht_2_to_3_truth <<
+      cos(rot_ang),   -sin(rot_ang),    0.0f,  link_length*cos(rot_ang),
+      sin(rot_ang),    cos(rot_ang),    0.0f,  link_length*sin(rot_ang),
+              0.0f,            0.0f,    1.0f,                      0.0f,
+              0.0f,            0.0f,    0.0f,                      1.0f;
+
+  EXPECT_TRUE(ht_2_to_3_truth.isApprox(ht_2_to_3_test));
+
+}
+
+// Not testing ht3To4 because it executes the same exact function as ht2To3
+
+TEST(htLegLinkTransforms, ht0To4)
+{
+  // Test the homogenous transform from link 0 to 4 via a contrived example
+  
+  float ang1 = 35.0f;
+  float ang2 = 22.1f;
+  float ang3 = -18.23f;
+  float link1 = 0.4;
+  float link2 = 0.11;
+  float link3 = 0.68;
+
+  Matrix4f ht_0_to_1 = smk::ht0To1(ang1, link1);
+  Matrix4f ht_1_to_2 = smk::ht1To2();
+  Matrix4f ht_2_to_3 = smk::ht2To3(ang2, link2);
+  Matrix4f ht_3_to_4 = smk::ht3To4(ang3, link3);
+
+  Matrix4f ht_0_to_4_truth = ht_0_to_1 * ht_1_to_2 * ht_2_to_3 * ht_3_to_4;
+
+  Matrix4f ht_0_to_4_test = smk::ht0To4(ang1,ang2,ang3,link1,link2,link3); 
+
+  EXPECT_TRUE(ht_0_to_4_truth.isApprox(ht_0_to_4_test));
 
 }

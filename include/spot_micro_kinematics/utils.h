@@ -1,8 +1,6 @@
 #pragma once // So header is only included once
 
-//#include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Geometry>
-//#include <math.h>  
 
 
 using namespace Eigen;
@@ -58,9 +56,31 @@ Matrix4f htLegLeftBack(const Matrix4f& ht_body_center, float body_length, float 
 Matrix4f ht0To1(float rot_ang, float link_length);
 
 
+// Returns the homogeneous transformation matrix for joint 1 to 2 for a
+// quadruped leg
+Matrix4f ht1To2();
 
 
+// Returns the homogeneous transformation matrix for joint 2 to 3 for a
+// quadruped leg
+Matrix4f ht2To3(float rot_ang, float link_length);
 
+// Returns the homogeneous transformation matrix for joint 3 to 4 for a
+// quadruped leg
+Matrix4f ht3To4(float rot_ang, float link_length);
+
+// Returns the homogeneous transformation matrix from joint 0 to 1 for a
+// quadruped leg
+Matrix4f ht0To4(float ang1, float ang2, float ang3, float link1, float link2, float link3);
+
+// Returns a tuple of the three leg angles in the order angle1, angle2, angle3
+// (hip, shoulder, knee) after running the inverse kinematics on a quadruped
+// leg.
+// Last argument, an optional boolean input, specifies whether the equations for
+// legs 1 and 2 are used (as opposed for legs 3 and 4)
+std::tuple<float, float, float> ikine(float x4, float y4, float z4,
+                                      float link1, float link2, float link3,
+                                      bool is_leg_12 = true); 
 
 
 }
