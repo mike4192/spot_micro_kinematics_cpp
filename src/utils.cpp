@@ -182,16 +182,25 @@ float ang1, ang2, ang3;
 float D = (x4*x4 + y4*y4 + z4*z4 - link1*link1 - link2*link2 - link3*link3) /
           (2*link2*link3);
 
+// Poor man's inverse kinematics reachability protection:
+// Limit D to a maximum value of 1, otherwise the square root functions
+// below (sqrt(1 - D^2)) will attempt a square root of a negative number
+if (D > 1.0f) {D = 1.0f;}
+
 if (is_leg_12) {
   ang3 = atan2(sqrt(1 - D*D), D);
 } else {
   ang3 = atan2(-sqrt(1 - D*D), D);
 }
 
-ang2 = atan2(z4, sqrt(x4*x4 + y4*y4 - link1*link1)) -
+// Another poor mans reachability sqrt protection
+float protected_sqrt_val = x4*x4 + y4*y4 - link1*link1;
+if (protected_sqrt_val < 0.0f) { protected_sqrt_val = 0.0f;}
+
+ang2 = atan2(z4, sqrt(protected_sqrt_val)) -
        atan2(link3*sin(ang3), link2 + link3*cos(ang3));
 
-ang1 = atan2(y4, x4) + atan2(sqrt(x4*x4 + y4*y4 - link1*link1), -link1);
+ang1 = atan2(y4, x4) + atan2(sqrt(protected_sqrt_val), -link1);
 
 return make_tuple(ang1, ang2, ang3);
 } 

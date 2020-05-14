@@ -340,3 +340,115 @@ TEST(htLegLinkTransforms, ht0To4)
   EXPECT_TRUE(ht_0_to_4_truth.isApprox(ht_0_to_4_test));
 
 }
+
+
+TEST(inverseKinematics, simpleFootPlacement)
+{
+  // Command a reachable foot position and verify the foot position ends up
+  // there 
+
+  float x4_desired = 0.1f;
+  float y4_desired = -0.4f;
+  float z4_desired = 0.1f;
+  float x4_test = 0.0f;
+  float y4_test = 0.0f;
+  float z4_test = 0.0f;
+  
+  float link1 = 0.1f;
+  float link2 = 0.4f;
+  float link3 = 0.5f;
+
+  float ang1;
+  float ang2;
+  float ang3;  
+  
+  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
+                                          link1, link2, link3, true);
+
+  // Now run forward kinematics and get position of foot
+  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+
+  // Get foot positions from matrix, the linear portion  
+  x4_test = ht_0_to_4(0,3);
+  y4_test = ht_0_to_4(1,3);
+  z4_test = ht_0_to_4(2,3);
+
+  EXPECT_FLOAT_EQ(x4_desired, x4_test);
+  EXPECT_FLOAT_EQ(y4_desired, y4_test);
+  EXPECT_FLOAT_EQ(z4_desired, z4_test);
+}
+
+
+TEST(inverseKinematics, simpleFootPlacementLeg34)
+{
+  // Command a reachable foot position and verify the foot position ends up
+  // there, commanding as leg 34 
+
+  float x4_desired = 0.1f;
+  float y4_desired = -0.4f;
+  float z4_desired = 0.1f;
+  float x4_test = 0.0f;
+  float y4_test = 0.0f;
+  float z4_test = 0.0f;
+  
+  float link1 = 0.1f;
+  float link2 = 0.4f;
+  float link3 = 0.5f;
+
+  float ang1;
+  float ang2;
+  float ang3;  
+ 
+  // Leg 34 signified by passing a boolean of false at the end 
+  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
+                                          link1, link2, link3, false);
+
+  // Now run forward kinematics and get position of foot
+  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+
+  // Get foot positions from matrix, the linear portion  
+  x4_test = ht_0_to_4(0,3);
+  y4_test = ht_0_to_4(1,3);
+  z4_test = ht_0_to_4(2,3);
+
+  EXPECT_FLOAT_EQ(x4_desired, x4_test);
+  EXPECT_FLOAT_EQ(y4_desired, y4_test);
+  EXPECT_FLOAT_EQ(z4_desired, z4_test);
+}
+
+TEST(inverseKinematics, unreachableFootPlacement)
+{
+  // Command a unreachable foot position and verify the foot position doesn't
+  // end up there, and that the program doesnt crash (by nature of unit test
+  // completing)
+
+  float x4_desired = 10.0f;
+  float y4_desired = -10.0f;
+  float z4_desired = 10.0f;
+  float x4_test = 0.0f;
+  float y4_test = 0.0f;
+  float z4_test = 0.0f;
+  
+  float link1 = 0.1f;
+  float link2 = 0.4f;
+  float link3 = 0.5f;
+
+  float ang1;
+  float ang2;
+  float ang3;  
+  
+  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
+                                          link1, link2, link3, true);
+
+  // Now run forward kinematics and get position of foot
+  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+
+  // Get foot positions from matrix, the linear portion  
+  x4_test = ht_0_to_4(0,3);
+  y4_test = ht_0_to_4(1,3);
+  z4_test = ht_0_to_4(2,3);
+
+  EXPECT_NE(x4_desired, x4_test);
+  EXPECT_NE(y4_desired, y4_test);
+  EXPECT_NE(z4_desired, z4_test);
+}
