@@ -13,6 +13,7 @@ find_package(Eigen3 REQUIRED NO_MODULE)
 add_library(spot_micro_kinematics 
     src/spot_micro_kinematics.cpp
 	src/utils.cpp
+	src/spot_micro_leg.cpp
 )
 
 target_include_directories(spot_micro_kinematics
@@ -42,3 +43,15 @@ target_link_libraries(test_utils
 )
 
 add_test(test_utils test_utils)
+
+
+# Add a testing executable
+add_executable(test_spot_micro_leg tests/test_spot_micro_leg.cpp)
+
+target_link_libraries(test_spot_micro_leg
+    spot_micro_kinematics
+    GTest::GTest 
+    GTest::Main
+)
+
+add_test(test_spot_micro_leg test_spot_micro_leg)
