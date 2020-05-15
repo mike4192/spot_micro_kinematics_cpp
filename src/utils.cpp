@@ -163,46 +163,55 @@ Matrix4f ht3To4(float rot_ang, float link_length) {
   return ht2To3(rot_ang, link_length);
 }
 
-
-Matrix4f ht0To4(float ang1, float ang2, float ang3, float link1, float link2, float link3) {
-// Result is a sequential multiplication of all 4 transform matrices
-return (ht0To1(ang1, link1) * ht1To2() * ht2To3(ang2, link2) * ht3To4(ang3, link3));
-
+Matrix4f ht0To4(const JointAngles& joint_angles,
+                const LinkLengths& link_lengths) {
+  // Result is a sequential multiplication of all 4 transform matrices
+  return (ht0To1(joint_angles.ang1, link_lengths.l1) *
+          ht1To2() *
+          ht2To3(joint_angles.ang2, link_lengths.l2) *
+          ht3To4(joint_angles.ang3,  link_lengths.l3));
 }
 
-std::tuple<float, float, float> ikine(float x4, float y4, float z4,
-                                      float link1, float link2, float link3,
-                                      bool is_leg_12) {
-using namespace std;
 
-// Initialize return variables
-float ang1, ang2, ang3;
+JointAngles ikine(const Point& point, const LinkLengths& link_lengths, bool is_leg_12) {
+  using namespace std;
 
-// Supporting variable D
-float D = (x4*x4 + y4*y4 + z4*z4 - link1*link1 - link2*link2 - link3*link3) /
-          (2*link2*link3);
+  // Initialize return struct
+  JointAngles joint_angles;
 
-// Poor man's inverse kinematics reachability protection:
-// Limit D to a maximum value of 1, otherwise the square root functions
-// below (sqrt(1 - D^2)) will attempt a square root of a negative number
-if (D > 1.0f) {D = 1.0f;}
+  // Convenience variables for math
+  float x4 = point.x;
+  float y4 = point.y;
+  float z4 = point.z;
+  float l1 = link_lengths.l1;
+  float l2 = link_lengths.l2;
+  float l3 = link_lengths.l3;
+  
+  // Supporting variable D
+  float D = (x4*x4 + y4*y4 + z4*z4 - l1*l1 - l2*l2 - l3*l3) /
+            (2*l2*l3);
 
-if (is_leg_12) {
-  ang3 = atan2(sqrt(1 - D*D), D);
-} else {
-  ang3 = atan2(-sqrt(1 - D*D), D);
-}
+  // Poor man's inverse kinematics reachability protection:
+  // Limit D to a maximum value of 1, otherwise the square root functions
+  // below (sqrt(1 - D^2)) will attempt a square root of a negative number
+  if (D > 1.0f) {D = 1.0f;}
 
-// Another poor mans reachability sqrt protection
-float protected_sqrt_val = x4*x4 + y4*y4 - link1*link1;
-if (protected_sqrt_val < 0.0f) { protected_sqrt_val = 0.0f;}
+  if (is_leg_12) {
+    joint_angles.ang3 = atan2(sqrt(1 - D*D), D);
+  } else {
+    joint_angles.ang3 = atan2(-sqrt(1 - D*D), D);
+  }
 
-ang2 = atan2(z4, sqrt(protected_sqrt_val)) -
-       atan2(link3*sin(ang3), link2 + link3*cos(ang3));
+  // Another poor mans reachability sqrt protection
+  float protected_sqrt_val = x4*x4 + y4*y4 - l1*l1;
+  if (protected_sqrt_val < 0.0f) { protected_sqrt_val = 0.0f;}
 
-ang1 = atan2(y4, x4) + atan2(sqrt(protected_sqrt_val), -link1);
+  joint_angles.ang2 = atan2(z4, sqrt(protected_sqrt_val)) -
+         atan2(l3*sin(joint_angles.ang3), l2 + l3*cos(joint_angles.ang3));
 
-return make_tuple(ang1, ang2, ang3);
+  joint_angles.ang1 = atan2(y4, x4) + atan2(sqrt(protected_sqrt_val), -l1);
+
+  return joint_angles;
 } 
 
 

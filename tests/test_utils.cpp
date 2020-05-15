@@ -328,6 +328,9 @@ TEST(htLegLinkTransforms, ht0To4)
   float link2 = 0.11;
   float link3 = 0.68;
 
+  smk::JointAngles joint_angles = {ang1, ang2, ang3};
+  smk::LinkLengths link_lengths = {link1, link2, link3};
+
   Matrix4f ht_0_to_1 = smk::ht0To1(ang1, link1);
   Matrix4f ht_1_to_2 = smk::ht1To2();
   Matrix4f ht_2_to_3 = smk::ht2To3(ang2, link2);
@@ -335,7 +338,7 @@ TEST(htLegLinkTransforms, ht0To4)
 
   Matrix4f ht_0_to_4_truth = ht_0_to_1 * ht_1_to_2 * ht_2_to_3 * ht_3_to_4;
 
-  Matrix4f ht_0_to_4_test = smk::ht0To4(ang1,ang2,ang3,link1,link2,link3); 
+  Matrix4f ht_0_to_4_test = smk::ht0To4(joint_angles, link_lengths); 
 
   EXPECT_TRUE(ht_0_to_4_truth.isApprox(ht_0_to_4_test));
 
@@ -358,15 +361,14 @@ TEST(inverseKinematics, simpleFootPlacement)
   float link2 = 0.4f;
   float link3 = 0.5f;
 
-  float ang1;
-  float ang2;
-  float ang3;  
-  
-  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
-                                          link1, link2, link3, true);
+  smk::JointAngles joint_angles;
+  smk::LinkLengths link_lengths = {link1, link2, link3};
+  smk::Point point = {x4_desired, y4_desired, z4_desired};
+
+  joint_angles = smk::ikine(point, link_lengths, true);
 
   // Now run forward kinematics and get position of foot
-  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+  Matrix4f ht_0_to_4 = smk::ht0To4(joint_angles, link_lengths);
 
   // Get foot positions from matrix, the linear portion  
   x4_test = ht_0_to_4(0,3);
@@ -395,16 +397,15 @@ TEST(inverseKinematics, simpleFootPlacementLeg34)
   float link2 = 0.4f;
   float link3 = 0.5f;
 
-  float ang1;
-  float ang2;
-  float ang3;  
+  smk::JointAngles joint_angles;
+  smk::LinkLengths link_lengths = {link1, link2, link3};
+  smk::Point point = {x4_desired, y4_desired, z4_desired};
  
   // Leg 34 signified by passing a boolean of false at the end 
-  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
-                                          link1, link2, link3, false);
+  joint_angles = smk::ikine(point, link_lengths, true);
 
   // Now run forward kinematics and get position of foot
-  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+  Matrix4f ht_0_to_4 = smk::ht0To4(joint_angles, link_lengths);
 
   // Get foot positions from matrix, the linear portion  
   x4_test = ht_0_to_4(0,3);
@@ -433,15 +434,14 @@ TEST(inverseKinematics, unreachableFootPlacement)
   float link2 = 0.4f;
   float link3 = 0.5f;
 
-  float ang1;
-  float ang2;
-  float ang3;  
-  
-  std::tie(ang1, ang2, ang3) = smk::ikine(x4_desired, y4_desired, z4_desired,
-                                          link1, link2, link3, true);
+  smk::JointAngles joint_angles;
+  smk::LinkLengths link_lengths = {link1, link2, link3};
+  smk::Point point = {x4_desired, y4_desired, z4_desired};
+
+  joint_angles = smk::ikine(point, link_lengths, true);
 
   // Now run forward kinematics and get position of foot
-  Matrix4f ht_0_to_4 = smk::ht0To4(ang1, ang2, ang3, link1, link2, link3);
+  Matrix4f ht_0_to_4 = smk::ht0To4(joint_angles, link_lengths);
 
   // Get foot positions from matrix, the linear portion  
   x4_test = ht_0_to_4(0,3);
