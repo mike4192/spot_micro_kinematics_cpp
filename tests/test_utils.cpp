@@ -1,5 +1,3 @@
-#include <math.h>
-
 #include <iostream>
 
 #include <eigen3/Eigen/Geometry>

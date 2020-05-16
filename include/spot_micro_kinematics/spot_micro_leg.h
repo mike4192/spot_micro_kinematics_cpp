@@ -7,8 +7,8 @@
 
 namespace smk {
 
-class SpotMicroLeg 
-{
+class SpotMicroLeg {
+
  public:
   // Constructor, sets a leg up with initial joint angles and link lengths, and
   // a leg starting point homogeneous transform
@@ -57,15 +57,6 @@ class SpotMicroLeg
   Eigen::Matrix4f ht_3_to_4_;
 
 };
-
-
-
-
-
-
-
-
-
 
 
 }
