@@ -1,5 +1,6 @@
 #include "spot_micro_kinematics/utils.h"
 
+#include <iostream>
 #include <cmath>
 
 #include <eigen3/Eigen/Geometry>
@@ -190,11 +191,15 @@ JointAngles ikine(const Point& point, const LinkLengths& link_lengths, bool is_l
   // Supporting variable D
   float D = (x4*x4 + y4*y4 + z4*z4 - l1*l1 - l2*l2 - l3*l3) /
             (2*l2*l3);
-
+  
   // Poor man's inverse kinematics reachability protection:
   // Limit D to a maximum value of 1, otherwise the square root functions
   // below (sqrt(1 - D^2)) will attempt a square root of a negative number
-  if (D > 1.0f) {D = 1.0f;}
+  if (D > 1.0f) {
+    D = 1.0f;
+  } else if (D < -1.0f) {
+    D = -1.0f;
+  }
 
   if (is_leg_12) {
     joint_angles.ang3 = atan2(sqrt(1 - D*D), D);
