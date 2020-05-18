@@ -28,6 +28,8 @@ struct SpotMicroConfig {
   float hip_link_length;
   float upper_leg_link_length;
   float lower_leg_link_length;
+  float body_width;
+  float body_length;
 };
 
 class SpotMicroKinematics {
@@ -37,11 +39,11 @@ class SpotMicroKinematics {
   SpotMicroKinematics(float x, float y, float z, const SpotMicroConfig& smc);
 
   // Sets the joint angles for the legs in the robot
-  void setLegJointAngles(LegsJointAngles four_legs_joint_angs);
+  void setLegJointAngles(const LegsJointAngles& four_legs_joint_angs);
 
   // Sets the foot for each leg to the commanded position in a global coordinate
   // system
-  void setFeetPosGlobalCoordinates(LegsFootPos four_legs_foot_pos);
+  void setFeetPosGlobalCoordinates(const LegsFootPos& four_legs_foot_pos);
 
   // Sets an absolute body pose for the robot while holding the feet stationary
   void setBodyPose(const Eigen::Matrix4f& ht_body);
@@ -52,8 +54,6 @@ class SpotMicroKinematics {
   // Returns the joint angles of the four legs
   LegsJointAngles getLegJointAngles();
 
-
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
  private:
 
   SpotMicroConfig smc_; // Spot micro config struct
@@ -69,10 +69,10 @@ class SpotMicroKinematics {
   float psi_;
  
   // Leg objects of the robot 
-  SpotMicroLeg right_back_leg;
-  SpotMicroLeg right_front_leg;
-  SpotMicroLeg left_front_leg;
-  SpotMicroLeg left_back_leg;
+  SpotMicroLeg right_back_leg_;
+  SpotMicroLeg right_front_leg_;
+  SpotMicroLeg left_front_leg_;
+  SpotMicroLeg left_back_leg_;
 
 };
 

@@ -15,6 +15,9 @@ class SpotMicroLeg {
                const LinkLengths& link_lengths,
                bool is_leg_12);
  
+  // Also use default constructor
+  SpotMicroLeg() = default;
+
   // Sets the three leg angles and updates homogeneous transformation
   // matrices 
   void setAngles(const JointAngles& joint_angles);
