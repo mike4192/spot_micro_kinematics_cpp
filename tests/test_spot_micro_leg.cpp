@@ -30,17 +30,16 @@ TEST(setFootPos, local_coordinates)
                      homogRotXyz(5*d2r, 5*d2r, 5*d2r); 
  
   // Make the leg start ht, put in zero boyd width and length 
-  Matrix4f leg_start_ht = htLegRightFront(body_ht, 0.0f, 0.0f); 
+  Matrix4f ht_leg_start = htLegRightFront(body_ht, 0.0f, 0.0f); 
   
   // Create leg object 
-  SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths,
-                                  leg_start_ht, true);
+  SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths, true);
 
   // Call method to set foot position in local coordinates
   sml.setFootPosLocalCoordinates(desired_point);
   
   // Get foot position in global coordinates
-  Point foot_point_global = sml.getFootPosGlobalCoordinates();
+  Point foot_point_global = sml.getFootPosGlobalCoordinates(ht_leg_start);
 
   // Create a homogeneous vector with that point
   Vector4f test_point_vec(foot_point_global.x,
@@ -49,7 +48,7 @@ TEST(setFootPos, local_coordinates)
                           1.0f);
 
   // Express that position in leg's local coordinate frame
-  auto leg_local_foot_pt = homogInverse(leg_start_ht) * test_point_vec;
+  auto leg_local_foot_pt = homogInverse(ht_leg_start) * test_point_vec;
 
   // Test equality to 0.0001
   EXPECT_NEAR(desired_point.x, leg_local_foot_pt(0), 0.0001f);
@@ -75,17 +74,16 @@ TEST(setFootPos, global_coordinates)
                      homogRotXyz(5*d2r, 5*d2r, 5*d2r); 
  
   // Make the leg start ht, put in zero boyd width and length 
-  Matrix4f leg_start_ht = htLegRightFront(body_ht, 0.0f, 0.0f); 
+  Matrix4f ht_leg_start = htLegRightFront(body_ht, 0.0f, 0.0f); 
   
   // Create leg object 
-  SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths,
-                                  leg_start_ht, true);
+  SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths, true);
 
   // Call method to set foot position in global coordinates
-  sml.setFootPosGlobalCoordinates(desired_point);
+  sml.setFootPosGlobalCoordinates(desired_point, ht_leg_start);
 
   // Get foot position
-  Point test_point = sml.getFootPosGlobalCoordinates();
+  Point test_point = sml.getFootPosGlobalCoordinates(ht_leg_start);
 
   // Test equality to 0.0001
   EXPECT_NEAR(desired_point.x, test_point.x, 0.0001f);
