@@ -27,9 +27,10 @@ target_include_directories(spot_micro_kinematics
 
 #############################################
 # Unit tests
-
-add_subdirectory(3rd_party/google-test)
-
+# Only add 3rd party directory if gtest doesnt already exist
+if (NOT TARGET gtest)
+		add_subdirectory(3rd_party/google-test)
+endif ()
 # enable CTest testing
 enable_testing()
 
@@ -38,8 +39,8 @@ add_executable(test_utils tests/test_utils.cpp)
 
 target_link_libraries(test_utils
     spot_micro_kinematics
-    GTest::GTest 
-    GTest::Main
+    gtest 
+    gtest_main
 )
 
 add_test(test_utils test_utils)
@@ -50,8 +51,8 @@ add_executable(test_spot_micro_leg tests/test_spot_micro_leg.cpp)
 
 target_link_libraries(test_spot_micro_leg
     spot_micro_kinematics
-    GTest::GTest 
-    GTest::Main
+    gtest 
+    gtest_main
 )
 
 add_test(test_spot_micro_leg test_spot_micro_leg)
@@ -61,8 +62,8 @@ add_executable(test_spot_micro_kinematics tests/test_spot_micro_kinematics.cpp)
 
 target_link_libraries(test_spot_micro_kinematics
     spot_micro_kinematics
-    GTest::GTest 
-    GTest::Main
+    gtest 
+    gtest_main
 )
 
 add_test(test_spot_micro_kinematics test_spot_micro_kinematics)
