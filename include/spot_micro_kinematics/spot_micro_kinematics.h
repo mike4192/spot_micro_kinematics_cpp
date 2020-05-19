@@ -38,6 +38,9 @@ class SpotMicroKinematics {
   // Constructor, sets up a spot micro kinematics object
   SpotMicroKinematics(float x, float y, float z, const SpotMicroConfig& smc);
 
+  // Returns the body center homogenous transformation matrix
+  Eigen::Matrix4f getBodyHt();
+
   // Sets the joint angles for the legs in the robot
   void setLegJointAngles(const LegsJointAngles& four_legs_joint_angs);
 
@@ -45,14 +48,17 @@ class SpotMicroKinematics {
   // system
   void setFeetPosGlobalCoordinates(const LegsFootPos& four_legs_foot_pos);
 
-  // Sets an absolute body pose for the robot while holding the feet stationary
-  void setBodyPose(const Eigen::Matrix4f& ht_body);
-
   // Sets a body rotation without translating the body or moving the feet
   void setBodyAngles(float phi, float theta, float psi);
 
+  // Sets a body position without rotation of the body, or moving the feet
+  void setBodyPosition(float x, float y, float z); 
+
   // Returns the joint angles of the four legs
-  LegsJointAngles getLegJointAngles();
+  LegsJointAngles getLegsJointAngles();
+
+  // Return the position of the four feet
+  LegsFootPos getLegsFootPos();
 
  private:
 

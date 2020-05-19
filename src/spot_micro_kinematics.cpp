@@ -34,6 +34,13 @@ SpotMicroKinematics::SpotMicroKinematics(float x, float y, float z,
 }
 
 
+Matrix4f SpotMicroKinematics::getBodyHt() {
+  // Euler angle order is phi, psi, theta because the axes of the robot are x
+  // pointing forward, y pointing up, z pointing right
+  return(homogTransXyz(x_, y_, z_) * homogRotXyz(phi_, psi_, theta_));
+}
+
+
 void SpotMicroKinematics::setLegJointAngles(
     const LegsJointAngles& four_legs_joint_angs) {
   // Call each leg's method to set joint angles 
@@ -46,32 +53,96 @@ void SpotMicroKinematics::setLegJointAngles(
 
 void SpotMicroKinematics::setFeetPosGlobalCoordinates(
     const LegsFootPos& four_legs_foot_pos) {
-  // Create matrices to represent ht of the body center
-  Matrix4f ht_body = homogTransXyz(x_, y_, z_) * homogRotXyz(phi_, theta_, psi_);
+  // Get the body center homogeneous transform matrix 
+  Matrix4f ht_body = getBodyHt();
 
   // Create each leg's starting ht matrix. Made in order of right back, right 
   // front, left front, left back
-  Matrix4f ht_rb = smk::htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_rf = smk::htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lf = smk::htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lb = smk::htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
 
 
   // Call each leg's method to set foot position in global coordinates
-  right_back_leg_.setFootPosGlobalCoordinates(four_legs_foot_pos.right_back,
-                                              ht_rb);
+  right_back_leg_.setFootPosGlobalCoordinates(
+      four_legs_foot_pos.right_back, ht_rb);
 
-  right_back_leg_.setFootPosGlobalCoordinates(four_legs_foot_pos.right_front,
-                                              ht_rf);
+  right_front_leg_.setFootPosGlobalCoordinates(
+      four_legs_foot_pos.right_front, ht_rf);
 
-  right_back_leg_.setFootPosGlobalCoordinates(four_legs_foot_pos.left_front,
-                                              ht_lf);
+  left_front_leg_.setFootPosGlobalCoordinates(
+      four_legs_foot_pos.left_front, ht_lf);
 
-  right_back_leg_.setFootPosGlobalCoordinates(four_legs_foot_pos.left_back,
-                                              ht_lb);
+  left_back_leg_.setFootPosGlobalCoordinates(
+      four_legs_foot_pos.left_back, ht_lb);
 }
 
 
+LegsJointAngles SpotMicroKinematics::getLegsJointAngles() {
+  // Return the leg joint angles
+  LegsJointAngles ret_val;
+
+  ret_val.right_back = right_back_leg_.getLegJointAngles();
+  ret_val.right_front = right_front_leg_.getLegJointAngles();
+  ret_val.left_front = left_front_leg_.getLegJointAngles();
+  ret_val.left_back = left_back_leg_.getLegJointAngles();
+
+  return ret_val;
+}
+
+
+void SpotMicroKinematics::setBodyAngles(float phi, float theta, float psi) {
+  
+  // Save the current feet position
+  LegsFootPos saved_foot_pos = getLegsFootPos();
+
+  // Update body angles
+  phi_ = phi;
+  theta_ = theta;
+  psi_ = psi;
+
+  // Call method to set absolute feet position to the saved values
+  setFeetPosGlobalCoordinates(saved_foot_pos);
+}
+
+
+void SpotMicroKinematics::setBodyPosition(float x, float y, float z) {
+  
+  // Save the current feet position
+  LegsFootPos saved_foot_pos = getLegsFootPos();
+
+  // Update body angles
+  x_ = x;
+  y_ = y;
+  z_ = z;
+
+  // Call method to set absolute feet position to the saved values
+  setFeetPosGlobalCoordinates(saved_foot_pos);
+}
+
+
+LegsFootPos SpotMicroKinematics::getLegsFootPos() {
+  // Get the body center homogeneous transform matrix 
+  Matrix4f ht_body = getBodyHt();
+
+  // Return the leg joint angles
+  LegsFootPos ret_val;
+
+  // Create each leg's starting ht matrix. Made in order of right back, right 
+  // front, left front, left back
+  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+
+  ret_val.right_back  = right_back_leg_.getFootPosGlobalCoordinates(ht_rb);
+  ret_val.right_front = right_front_leg_.getFootPosGlobalCoordinates(ht_rf);
+  ret_val.left_front  = left_front_leg_.getFootPosGlobalCoordinates(ht_lf);
+  ret_val.left_back   = left_back_leg_.getFootPosGlobalCoordinates(ht_lb);
+
+  return ret_val;
+}
 
 
 

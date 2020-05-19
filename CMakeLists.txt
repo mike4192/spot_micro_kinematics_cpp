@@ -55,3 +55,14 @@ target_link_libraries(test_spot_micro_leg
 )
 
 add_test(test_spot_micro_leg test_spot_micro_leg)
+
+# Add a testing executable
+add_executable(test_spot_micro_kinematics tests/test_spot_micro_kinematics.cpp)
+
+target_link_libraries(test_spot_micro_kinematics
+    spot_micro_kinematics
+    GTest::GTest 
+    GTest::Main
+)
+
+add_test(test_spot_micro_kinematics test_spot_micro_kinematics)
