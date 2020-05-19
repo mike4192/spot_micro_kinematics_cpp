@@ -79,19 +79,6 @@ void SpotMicroKinematics::setFeetPosGlobalCoordinates(
 }
 
 
-LegsJointAngles SpotMicroKinematics::getLegsJointAngles() {
-  // Return the leg joint angles
-  LegsJointAngles ret_val;
-
-  ret_val.right_back = right_back_leg_.getLegJointAngles();
-  ret_val.right_front = right_front_leg_.getLegJointAngles();
-  ret_val.left_front = left_front_leg_.getLegJointAngles();
-  ret_val.left_back = left_back_leg_.getLegJointAngles();
-
-  return ret_val;
-}
-
-
 void SpotMicroKinematics::setBodyAngles(float phi, float theta, float psi) {
   
   // Save the current feet position
@@ -122,7 +109,21 @@ void SpotMicroKinematics::setBodyPosition(float x, float y, float z) {
 }
 
 
+LegsJointAngles SpotMicroKinematics::getLegsJointAngles() {
+  // Return the leg joint angles
+  LegsJointAngles ret_val;
+
+  ret_val.right_back = right_back_leg_.getLegJointAngles();
+  ret_val.right_front = right_front_leg_.getLegJointAngles();
+  ret_val.left_front = left_front_leg_.getLegJointAngles();
+  ret_val.left_back = left_back_leg_.getLegJointAngles();
+
+  return ret_val;
+}
+
+
 LegsFootPos SpotMicroKinematics::getLegsFootPos() {
+  
   // Get the body center homogeneous transform matrix 
   Matrix4f ht_body = getBodyHt();
 
