@@ -38,6 +38,9 @@ class SpotMicroKinematics {
   // Constructor, sets up a spot micro kinematics object
   SpotMicroKinematics(float x, float y, float z, const SpotMicroConfig& smc);
 
+  // Default Constructor
+  SpotMicroKinematics() = default;
+
   // Returns the body center homogenous transformation matrix
   Eigen::Matrix4f getBodyHt();
 
