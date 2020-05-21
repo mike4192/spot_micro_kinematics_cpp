@@ -32,6 +32,19 @@ struct SpotMicroConfig {
   float body_length;
 };
 
+// Struct to hold euler angles
+struct EulerAngs {
+  float phi;
+  float theta;
+  float psi;
+};
+
+// Struct to hold body position and euler angles
+struct BodyState {
+  EulerAngs euler_angs;
+  Point xyz_pos;
+};
+
 class SpotMicroKinematics {
 
  public:
@@ -63,6 +76,8 @@ class SpotMicroKinematics {
   // Return the position of the four feet
   LegsFootPos getLegsFootPos();
 
+  // Returns body state: body position and euler angles
+  BodyState getBodyState();
  private:
 
   SpotMicroConfig smc_; // Spot micro config struct

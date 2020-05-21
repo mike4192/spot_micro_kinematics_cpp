@@ -254,3 +254,35 @@ TEST(testSetBodyPos, basic_test)
   EXPECT_TRUE(abs(truth_joint_angles.left_back.ang3 -
                   test_legs_joint_angs.left_back.ang3) > tol); 
 }
+
+
+TEST(testReturnBodyState, basic_test)
+{
+  float d2r = M_PI/180.0; 
+  float truth_x = 0.1; float truth_y = 0.12; float truth_z = 0.13;
+  float truth_phi = 0.1; float truth_theta = 0.05f; float truth_psi = -0.02f;
+  
+  // Create a spot micro kinematics object
+  SpotMicroConfig smc = {0.1, 0.2, 0.3, 0.4, 0.5};
+
+  SpotMicroKinematics sm = SpotMicroKinematics(truth_x, truth_y, truth_z, smc);
+
+  JointAngles desired = {10*d2r, 20*d2r, -15*d2r};
+
+  LegsJointAngles four_legs_desired_angs = {desired, desired, desired, desired};
+
+  sm.setLegJointAngles(four_legs_desired_angs);
+
+  sm.setBodyAngles(truth_phi, truth_theta, truth_psi);
+
+  BodyState test_body_state = sm.getBodyState();
+
+  // Test equality
+  EXPECT_FLOAT_EQ(truth_x, test_body_state.xyz_pos.x); 
+  EXPECT_FLOAT_EQ(truth_y, test_body_state.xyz_pos.y); 
+  EXPECT_FLOAT_EQ(truth_z, test_body_state.xyz_pos.z); 
+
+  EXPECT_FLOAT_EQ(truth_phi, test_body_state.euler_angs.phi); 
+  EXPECT_FLOAT_EQ(truth_theta, test_body_state.euler_angs.theta); 
+  EXPECT_FLOAT_EQ(truth_psi, test_body_state.euler_angs.psi); 
+}

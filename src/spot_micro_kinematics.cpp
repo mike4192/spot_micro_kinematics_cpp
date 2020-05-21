@@ -145,6 +145,10 @@ LegsFootPos SpotMicroKinematics::getLegsFootPos() {
   return ret_val;
 }
 
-
+BodyState SpotMicroKinematics::getBodyState() {
+  BodyState body_state = {EulerAngs{phi_, theta_, psi_},
+                          Point{x_, y_, z_}};
+  return body_state;
+}
 
 }
