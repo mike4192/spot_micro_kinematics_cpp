@@ -80,7 +80,6 @@ void SpotMicroKinematics::setFeetPosGlobalCoordinates(
 
 
 void SpotMicroKinematics::setBodyAngles(float phi, float theta, float psi) {
-  
   // Save the current feet position
   LegsFootPos saved_foot_pos = getLegsFootPos();
 
@@ -95,7 +94,6 @@ void SpotMicroKinematics::setBodyAngles(float phi, float theta, float psi) {
 
 
 void SpotMicroKinematics::setBodyPosition(float x, float y, float z) {
-  
   // Save the current feet position
   LegsFootPos saved_foot_pos = getLegsFootPos();
 
@@ -108,6 +106,21 @@ void SpotMicroKinematics::setBodyPosition(float x, float y, float z) {
   setFeetPosGlobalCoordinates(saved_foot_pos);
 }
 
+
+void SpotMicroKinematics::setBodyState(const BodyState& body_state) {
+  // Set x,y,z position
+  x_ = body_state.xyz_pos.x; 
+  y_ = body_state.xyz_pos.y; 
+  z_ = body_state.xyz_pos.z;
+
+  // set euler angles
+  phi_ = body_state.euler_angs.phi;
+  theta_ = body_state.euler_angs.theta;
+  psi_ = body_state.euler_angs.psi;
+
+  // set feet position
+  setFeetPosGlobalCoordinates(body_state.leg_feet_pos);
+}
 
 LegsJointAngles SpotMicroKinematics::getLegsJointAngles() {
   // Return the leg joint angles

@@ -1,4 +1,4 @@
-#pragma once
+
 
 #include <eigen3/Eigen/Geometry>
 
@@ -71,13 +71,16 @@ class SpotMicroKinematics {
   // Sets a body position without rotation of the body, or moving the feet
   void setBodyPosition(float x, float y, float z); 
 
+  // Sets the body state: feet position, body position and angles
+  void setBodyState(const BodyState& body_state);
+
   // Returns the joint angles of the four legs
   LegsJointAngles getLegsJointAngles();
 
   // Return the position of the four feet
   LegsFootPos getLegsFootPos();
 
-  // Returns body state: body position and euler angles
+  // Returns body state: feet positio, body position and angles
   BodyState getBodyState();
  private:
 
