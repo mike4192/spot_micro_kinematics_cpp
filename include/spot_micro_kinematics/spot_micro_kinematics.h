@@ -43,6 +43,7 @@ struct EulerAngs {
 struct BodyState {
   EulerAngs euler_angs;
   Point xyz_pos;
+  LegsFootPos leg_feet_pos;
 };
 
 class SpotMicroKinematics {
