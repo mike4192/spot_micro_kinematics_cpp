@@ -82,6 +82,11 @@ class SpotMicroKinematics {
 
   // Returns body state: feet positio, body position and angles
   BodyState getBodyState();
+
+  // Returns a structure of the relative homogenous transforms for 
+  // all of the robot links
+  AllRobotRelativeTransforms getRobotTransforms();
+
  private:
 
   SpotMicroConfig smc_; // Spot micro config struct

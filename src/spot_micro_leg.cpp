@@ -5,7 +5,7 @@
 
 using namespace Eigen;
 
-namespace smk {
+namespace smk { // Start smk namespace
 
 
 // Constructor
@@ -74,4 +74,19 @@ JointAngles SpotMicroLeg::getLegJointAngles() {
 }
 
 
+Matrix4f SpotMicroLeg::getTransform0To1() {
+  return ht0To1(joint_angles_.ang1, link_lengths_.l1);
 }
+
+
+Matrix4f SpotMicroLeg::getTransform1To3() {
+  return (ht1To2() *
+          ht2To3(joint_angles_.ang2, link_lengths_.l2));
+}
+
+
+Matrix4f SpotMicroLeg::getTransform3To4() {
+  return ht3To4(joint_angles_.ang3, link_lengths_.l3);
+}
+
+} // End smk namespace

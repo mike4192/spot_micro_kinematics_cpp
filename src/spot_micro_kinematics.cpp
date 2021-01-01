@@ -165,4 +165,18 @@ BodyState SpotMicroKinematics::getBodyState() {
   return body_state;
 }
 
+
+AllRobotRelativeTransforms SpotMicroKinematics::getRobotTransforms() {
+  // Initialize structure
+  AllRobotRelativeTransforms allTransforms;
+
+  // Fill the structure in
+  allTransforms.bodyCenter = getBodyHt();
+
+  allTransforms.centerToRightBack = htLegRightBack(allTransforms.bodyCenter,
+                                                   smc_.body_length,
+                                                   smc_.body_width);
+
+}
+
 }

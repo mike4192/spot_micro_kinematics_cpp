@@ -23,6 +23,24 @@ struct JointAngles {
   float ang3;
 };
 
+struct LegRelativeTransforms {
+  Eigen::Matrix4f t01;
+  Eigen::Matrix4f t13;
+  Eigen::Matrix4f t34;
+};
+
+struct AllRobotRelativeTransforms {
+  Eigen::Matrix4f bodyCenter;
+  Eigen::Matrix4f centerToRightBack;
+  Eigen::Matrix4f centerToRightFront;
+  Eigen::Matrix4f centerToLeftFront;
+  Eigen::Matrix4f centerToLeftBack;
+  LegRelativeTransforms rightBackLeg;
+  LegRelativeTransforms rightFrontLeg;
+  LegRelativeTransforms leftFrontLeg;
+  LegRelativeTransforms leftBackLeg;  
+};
+
 // Returns a 4x4 Matrix that represents a homogeneous rotation matrix
 // in the order x, y, z. Input angles are in units radians.
 // A convenience wrapper around Eigen::Transform build up
