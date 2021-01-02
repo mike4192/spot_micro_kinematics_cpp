@@ -6,7 +6,7 @@
 
 using namespace Eigen;
 
-namespace smk {
+namespace smk { // Start smk namespace
 
 SpotMicroKinematics::SpotMicroKinematics(float x, float y, float z,
                                          const SpotMicroConfig& smc) 
@@ -167,16 +167,52 @@ BodyState SpotMicroKinematics::getBodyState() {
 
 
 AllRobotRelativeTransforms SpotMicroKinematics::getRobotTransforms() {
+
   // Initialize structure
   AllRobotRelativeTransforms allTransforms;
 
   // Fill the structure in
+  // Body center
   allTransforms.bodyCenter = getBodyHt();
-
+  
+  // Center to four leg corners
   allTransforms.centerToRightBack = htLegRightBack(allTransforms.bodyCenter,
                                                    smc_.body_length,
                                                    smc_.body_width);
 
+  allTransforms.centerToRightFront = htLegRightFront(allTransforms.bodyCenter,
+                                                     smc_.body_length,
+                                                     smc_.body_width);
+
+  allTransforms.centerToLeftFront = htLegLeftFront(allTransforms.bodyCenter,
+                                                   smc_.body_length,
+                                                   smc_.body_width);
+
+  allTransforms.centerToLeftBack = htLegLeftBack(allTransforms.bodyCenter,
+                                                 smc_.body_length,
+                                                 smc_.body_width);
+
+  // Right back leg
+  allTransforms.rightBackLeg.t01 = right_back_leg_.getTransform0To1();
+  allTransforms.rightBackLeg.t13 = right_back_leg_.getTransform1To3();
+  allTransforms.rightBackLeg.t34 = right_back_leg_.getTransform3To4();
+
+  // Right front leg
+  allTransforms.rightFrontLeg.t01 = right_front_leg_.getTransform0To1();
+  allTransforms.rightFrontLeg.t13 = right_front_leg_.getTransform1To3();
+  allTransforms.rightFrontLeg.t34 = right_front_leg_.getTransform3To4();
+
+  // Left front leg
+  allTransforms.leftFrontLeg.t01 = left_front_leg_.getTransform0To1();
+  allTransforms.leftFrontLeg.t13 = left_front_leg_.getTransform1To3();
+  allTransforms.leftFrontLeg.t34 = left_front_leg_.getTransform3To4();
+
+  // Left back leg
+  allTransforms.leftBackLeg.t01 = left_back_leg_.getTransform0To1();
+  allTransforms.leftBackLeg.t13 = left_back_leg_.getTransform1To3();
+  allTransforms.leftBackLeg.t34 = left_back_leg_.getTransform3To4();
+
+  return allTransforms;
 }
 
-}
+} // End smk namespace

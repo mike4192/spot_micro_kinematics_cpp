@@ -8,7 +8,7 @@
 using namespace Eigen;
 
 namespace smk
-{
+{ // Start smk namespace
 
 Matrix4f homogRotXyz(float x_ang, float y_ang, float z_ang)
 {
@@ -219,13 +219,4 @@ JointAngles ikine(const Point& point, const LinkLengths& link_lengths, bool is_l
   return joint_angles;
 } 
 
-
-
-
-
-
-
-
-
-
-}
+} // End smk namespace

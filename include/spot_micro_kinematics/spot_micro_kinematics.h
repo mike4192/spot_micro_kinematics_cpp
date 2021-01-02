@@ -46,6 +46,18 @@ struct BodyState {
   LegsFootPos leg_feet_pos;
 };
 
+struct AllRobotRelativeTransforms {
+  Eigen::Matrix4f bodyCenter;
+  Eigen::Matrix4f centerToRightBack;
+  Eigen::Matrix4f centerToRightFront;
+  Eigen::Matrix4f centerToLeftFront;
+  Eigen::Matrix4f centerToLeftBack;
+  LegRelativeTransforms rightBackLeg;
+  LegRelativeTransforms rightFrontLeg;
+  LegRelativeTransforms leftFrontLeg;
+  LegRelativeTransforms leftBackLeg;  
+};
+
 class SpotMicroKinematics {
 
  public:

@@ -29,17 +29,6 @@ struct LegRelativeTransforms {
   Eigen::Matrix4f t34;
 };
 
-struct AllRobotRelativeTransforms {
-  Eigen::Matrix4f bodyCenter;
-  Eigen::Matrix4f centerToRightBack;
-  Eigen::Matrix4f centerToRightFront;
-  Eigen::Matrix4f centerToLeftFront;
-  Eigen::Matrix4f centerToLeftBack;
-  LegRelativeTransforms rightBackLeg;
-  LegRelativeTransforms rightFrontLeg;
-  LegRelativeTransforms leftFrontLeg;
-  LegRelativeTransforms leftBackLeg;  
-};
 
 // Returns a 4x4 Matrix that represents a homogeneous rotation matrix
 // in the order x, y, z. Input angles are in units radians.
@@ -116,6 +105,4 @@ Eigen::Matrix4f ht0To4(const JointAngles& joint_angles,
 // legs 1 and 2 are used (as opposed for legs 3 and 4)
  JointAngles ikine(const Point& point, const LinkLengths& link_lengths,
                    bool is_leg_12 = true); 
-
-
 }
