@@ -47,34 +47,30 @@ Eigen::Matrix4f homogTransXyz(float x, float y, float z);
 Eigen::Matrix4f homogInverse(const Eigen::Matrix4f& ht);
 
 
-// Returns the homogeneous transformation matrix representing the coordinate
-// system and position of the right back leg of a quadruped. Assumes legs are
-// positioned in the corner of a rectangular plane defined by a length and
-// height. Requires the homogeneous transform representing the body center.
-Eigen::Matrix4f htLegRightBack(const Eigen::Matrix4f& ht_body_center,
-                               float body_length, float body_width);
+// Returns the homogeneous transformation matrix representing the transformation
+// from robot center to a coordinate system of the right back leg of a quadruped. 
+// Assumes legs are positioned in the corner of a rectangular plane defined by a
+// length and height.
+Eigen::Matrix4f htLegRightBack(float body_length, float body_width);
 
 
-// Returns the homogeneous transformation matrix representing the coordinate
-// system and position of the right front leg of a quadruped. Assumes legs are
-// positioned in the corner of a rectangular plane defined by a length and
-// height. Requires the homogeneous transform representing the body center.
-Eigen::Matrix4f htLegRightFront(const Eigen::Matrix4f& ht_body_center,
-                                float body_length, float body_width);
+// Returns the homogeneous transformation matrix representing the transformation
+// from robot center to a coordinate system of the right front leg of a quadruped. 
+// Assumes legs are positioned in the corner of a rectangular plane defined by a
+// length and height.
+Eigen::Matrix4f htLegRightFront(float body_length, float body_width);
 
-// Returns the homogeneous transformation matrix representing the coordinate
-// system and position of the left front leg of a quadruped. Assumes legs are
-// positioned in the corner of a rectangular plane defined by a length and
-// height. Requires the homogeneous transform representing the body center.
-Eigen::Matrix4f htLegLeftFront(const Eigen::Matrix4f& ht_body_center,
-                               float body_length, float body_width);
+// Returns the homogeneous transformation matrix representing the transformation
+// from robot center to a coordinate system of the left front leg of a quadruped. 
+// Assumes legs are positioned in the corner of a rectangular plane defined by a
+// length and height.
+Eigen::Matrix4f htLegLeftFront(float body_length, float body_width);
 
-// Returns the homogeneous transformation matrix representing the coordinate
-// system and position of the left back leg of a quadruped. Assumes legs are
-// positioned in the corner of a rectangular plane defined by a length and
-// height. Requires the homogeneous transform representing the body center.
-Eigen::Matrix4f htLegLeftBack(const Eigen::Matrix4f& ht_body_center,
-                              float body_length, float body_width);
+// Returns the homogeneous transformation matrix representing the transformation
+// from robot center to a coordinate system of the left back leg of a quadruped. 
+// Assumes legs are positioned in the corner of a rectangular plane defined by a
+// length and height.
+Eigen::Matrix4f htLegLeftBack(float body_length, float body_width);
 
 
 // Returns the homogeneous transformation matrix for joint 0 to 1 for a

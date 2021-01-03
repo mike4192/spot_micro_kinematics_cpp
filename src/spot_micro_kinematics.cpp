@@ -58,10 +58,10 @@ void SpotMicroKinematics::setFeetPosGlobalCoordinates(
 
   // Create each leg's starting ht matrix. Made in order of right back, right 
   // front, left front, left back
-  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rb = ht_body * htLegRightBack(smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = ht_body * htLegRightFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = ht_body * htLegLeftFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = ht_body * htLegLeftBack(smc_.body_length, smc_.body_width);
 
 
   // Call each leg's method to set foot position in global coordinates
@@ -145,10 +145,10 @@ LegsFootPos SpotMicroKinematics::getLegsFootPos() {
 
   // Create each leg's starting ht matrix. Made in order of right back, right 
   // front, left front, left back
-  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rb = ht_body * htLegRightBack(smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = ht_body * htLegRightFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = ht_body * htLegLeftFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = ht_body * htLegLeftBack(smc_.body_length, smc_.body_width);
 
   ret_val.right_back  = right_back_leg_.getFootPosGlobalCoordinates(ht_rb);
   ret_val.right_front = right_front_leg_.getFootPosGlobalCoordinates(ht_rf);
@@ -176,20 +176,16 @@ AllRobotRelativeTransforms SpotMicroKinematics::getRobotTransforms() {
   allTransforms.bodyCenter = getBodyHt();
   
   // Center to four leg corners
-  allTransforms.centerToRightBack = htLegRightBack(allTransforms.bodyCenter,
-                                                   smc_.body_length,
+  allTransforms.centerToRightBack = htLegRightBack(smc_.body_length,
                                                    smc_.body_width);
 
-  allTransforms.centerToRightFront = htLegRightFront(allTransforms.bodyCenter,
-                                                     smc_.body_length,
+  allTransforms.centerToRightFront = htLegRightFront(smc_.body_length,
                                                      smc_.body_width);
 
-  allTransforms.centerToLeftFront = htLegLeftFront(allTransforms.bodyCenter,
-                                                   smc_.body_length,
+  allTransforms.centerToLeftFront = htLegLeftFront(smc_.body_length,
                                                    smc_.body_width);
 
-  allTransforms.centerToLeftBack = htLegLeftBack(allTransforms.bodyCenter,
-                                                 smc_.body_length,
+  allTransforms.centerToLeftBack = htLegLeftBack(smc_.body_length,
                                                  smc_.body_width);
 
   // Right back leg
