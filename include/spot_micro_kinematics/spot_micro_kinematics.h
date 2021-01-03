@@ -6,7 +6,7 @@
 #include "spot_micro_kinematics/spot_micro_leg.h"
 
 
-namespace smk {
+namespace smk { // Start smk namespace
 
 // Struct to hold joint angles for four legs
 struct LegsJointAngles {
@@ -46,6 +46,18 @@ struct BodyState {
   LegsFootPos leg_feet_pos;
 };
 
+struct AllRobotRelativeTransforms {
+  Eigen::Matrix4f bodyCenter;
+  Eigen::Matrix4f centerToRightBack;
+  Eigen::Matrix4f centerToRightFront;
+  Eigen::Matrix4f centerToLeftFront;
+  Eigen::Matrix4f centerToLeftBack;
+  LegRelativeTransforms rightBackLeg;
+  LegRelativeTransforms rightFrontLeg;
+  LegRelativeTransforms leftFrontLeg;
+  LegRelativeTransforms leftBackLeg;  
+};
+
 class SpotMicroKinematics {
 
  public:
@@ -82,6 +94,11 @@ class SpotMicroKinematics {
 
   // Returns body state: feet positio, body position and angles
   BodyState getBodyState();
+
+  // Returns a structure of the relative homogenous transforms for 
+  // all of the robot links
+  AllRobotRelativeTransforms getRobotTransforms();
+
  private:
 
   SpotMicroConfig smc_; // Spot micro config struct
@@ -104,10 +121,7 @@ class SpotMicroKinematics {
 
 };
 
-
-
-
-}
+} // End smk namespace
 
 
 

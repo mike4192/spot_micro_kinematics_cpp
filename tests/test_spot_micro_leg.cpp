@@ -11,7 +11,6 @@ using namespace smk;
 
 TEST(setFootPos, local_coordinates)
 {
-  
   // Create a leg object with a homogeneous transform that is 
   // far translated. Call method to set a reachable point within the legs own
   // coordinate system (but which would not be a point reachable if it were in a
@@ -28,7 +27,7 @@ TEST(setFootPos, local_coordinates)
                      homogRotXyz(5*d2r, 5*d2r, 5*d2r); 
  
   // Make the leg start ht, put in zero boyd width and length 
-  Matrix4f ht_leg_start = htLegRightFront(body_ht, 0.0f, 0.0f); 
+  Matrix4f ht_leg_start = body_ht * htLegRightFront(0.0f, 0.0f); 
   
   // Create leg object 
   SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths, true);
@@ -57,7 +56,6 @@ TEST(setFootPos, local_coordinates)
 
 TEST(setFootPos, global_coordinates)
 {
-
   // Create a leg object with some non zero starting homogeneous trasnform, and
   // leg links. Call method to set a reachable point. Verify foot placed at that
   // point.
@@ -72,7 +70,7 @@ TEST(setFootPos, global_coordinates)
                      homogRotXyz(5*d2r, 5*d2r, 5*d2r); 
  
   // Make the leg start ht, put in zero boyd width and length 
-  Matrix4f ht_leg_start = htLegRightFront(body_ht, 0.0f, 0.0f); 
+  Matrix4f ht_leg_start = body_ht * htLegRightFront(0.0f, 0.0f); 
   
   // Create leg object 
   SpotMicroLeg sml = SpotMicroLeg(joint_angles, link_lengths, true);

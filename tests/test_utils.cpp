@@ -151,16 +151,13 @@ TEST(htLeg, rightback)
   float width = 4.0f;
   float height = 0.14f;
 
-  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
-                     smk::homogTransXyz(0.0f, -height, 0.0f); 
-
-  Matrix4f ht_rightback_test = smk::htLegRightBack(body_ht, len, width);
+  Matrix4f ht_rightback_test = smk::htLegRightBack(len, width);
 
   Matrix4f ht_rightback_truth = Matrix4f::Identity();
 
   ht_rightback_truth <<
       cos(M_PI/2.0f),       0.0f,       sin(M_PI/2.0f),     -len/2.0f,
-                0.0f,       1.0f,                 0.0f,       -height,
+                0.0f,       1.0f,                 0.0f,          0.0f,
      -sin(M_PI/2.0f),       0.0f,       cos(M_PI/2.0f),    width/2.0f,
                 0.0f,       0.0f,                 0.0f,          1.0f;
 
@@ -178,16 +175,13 @@ TEST(htLeg, rightfront)
   float width = 4.0f;
   float height = 0.14f;
 
-  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
-                     smk::homogTransXyz(0.0f, -height, 0.0f); 
-
-  Matrix4f ht_rightfront_test = smk::htLegRightFront(body_ht, len, width);
+  Matrix4f ht_rightfront_test = smk::htLegRightFront(len, width);
 
   Matrix4f ht_rightfront_truth = Matrix4f::Identity();
 
   ht_rightfront_truth <<
       cos(M_PI/2.0f),       0.0f,       sin(M_PI/2.0f),      len/2.0f,
-                0.0f,       1.0f,                 0.0f,       -height,
+                0.0f,       1.0f,                 0.0f,          0.0,
      -sin(M_PI/2.0f),       0.0f,       cos(M_PI/2.0f),    width/2.0f,
                 0.0f,       0.0f,                 0.0f,          1.0f;
 
@@ -208,13 +202,13 @@ TEST(htLeg, leftfront)
   Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
                      smk::homogTransXyz(0.0f, -height, 0.0f); 
 
-  Matrix4f ht_leftfront_test = smk::htLegLeftFront(body_ht, len, width);
+  Matrix4f ht_leftfront_test = smk::htLegLeftFront(len, width);
 
   Matrix4f ht_leftfront_truth = Matrix4f::Identity();
 
   ht_leftfront_truth <<
       cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),      len/2.0f,
-                 0.0f,       1.0f,                  0.0f,       -height,
+                 0.0f,       1.0f,                  0.0f,          0.0,
      -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
                  0.0f,       0.0f,                  0.0f,          1.0f;
 
@@ -231,16 +225,13 @@ TEST(htLeg, leftback)
   float width = 4.0f;
   float height = 0.14f;
 
-  Matrix4f body_ht = smk::homogRotXyz(0.0f, 0.0f, 0.0f) *
-                     smk::homogTransXyz(0.0f, -height, 0.0f); 
-
-  Matrix4f ht_leftback_test = smk::htLegLeftBack(body_ht, len, width);
+  Matrix4f ht_leftback_test = smk::htLegLeftBack(len, width);
 
   Matrix4f ht_leftback_truth = Matrix4f::Identity();
 
   ht_leftback_truth <<
       cos(-M_PI/2.0f),       0.0f,       sin(-M_PI/2.0f),     -len/2.0f,
-                 0.0f,       1.0f,                  0.0f,       -height,
+                 0.0f,       1.0f,                  0.0f,          0.0,
      -sin(-M_PI/2.0f),       0.0f,       cos(-M_PI/2.0f),   -width/2.0f,
                  0.0f,       0.0f,                  0.0f,          1.0f;
 

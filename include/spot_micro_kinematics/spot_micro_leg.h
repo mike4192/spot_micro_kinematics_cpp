@@ -37,6 +37,15 @@ class SpotMicroLeg {
   // Returns the three joint angles, ang1, ang2, ang3
   JointAngles getLegJointAngles();
 
+  // Get homogenous transform for leg base to link 1
+  Eigen::Matrix4f getTransform0To1();
+
+  // Get homogenous transform for leg base to link 3
+  Eigen::Matrix4f getTransform1To3();
+
+  // Get homogenous transform for leg base to link 4
+  Eigen::Matrix4f getTransform3To4();
+
 
  private:
   JointAngles joint_angles_; // Joint angles of the leg
@@ -45,6 +54,7 @@ class SpotMicroLeg {
 
   bool is_leg_12_; // Boolean representing whether leg is 1 or 2,
                    // (as opposed to 3 or 4)
+
 };
 
 

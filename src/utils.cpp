@@ -8,7 +8,7 @@
 using namespace Eigen;
 
 namespace smk
-{
+{ // Start smk namespace
 
 Matrix4f homogRotXyz(float x_ang, float y_ang, float z_ang)
 {
@@ -69,7 +69,7 @@ Matrix4f homogInverse(const Matrix4f& ht)
 }
 
 
-Matrix4f htLegRightBack(const Matrix4f& ht_body_center, float body_length, float body_width) {
+Matrix4f htLegRightBack(float body_length, float body_width) {
 
   // Build up matrix representing right back leg ht. First, a pi/2 rotation in y
   Matrix4f htLegRightBack = homogRotXyz(0.0f, M_PI/2.0f, 0.0);
@@ -77,24 +77,22 @@ Matrix4f htLegRightBack(const Matrix4f& ht_body_center, float body_length, float
   // Next, add the linear translation portion
   htLegRightBack.block<3,1>(0,3) = Vector3f(-body_length/2.0f, 0.0f, body_width/2.0f);
 
-  // Return the matrix product of ht_body_center and the leg rightback ht
-  return (ht_body_center * htLegRightBack);
+  return htLegRightBack;
 }
 
 
-Matrix4f htLegRightFront(const Matrix4f& ht_body_center, float body_length, float body_width) {
+Matrix4f htLegRightFront(float body_length, float body_width) {
 
   // Build up matrix representing right front leg ht. First, a pi/2 rotation in y
-  Matrix4f htLegRightBack = homogRotXyz(0.0f, M_PI/2.0f, 0.0);
+  Matrix4f htLegRightFront = homogRotXyz(0.0f, M_PI/2.0f, 0.0);
 
   // Next, add the linear translation portion
-  htLegRightBack.block<3,1>(0,3) = Vector3f(body_length/2.0f, 0.0f, body_width/2.0f);
+  htLegRightFront.block<3,1>(0,3) = Vector3f(body_length/2.0f, 0.0f, body_width/2.0f);
 
-  // Return the matrix product of ht_body_center and the leg ht
-  return (ht_body_center * htLegRightBack);
+  return htLegRightFront;
 }
 
-Matrix4f htLegLeftFront(const Matrix4f& ht_body_center, float body_length, float body_width) {
+Matrix4f htLegLeftFront(float body_length, float body_width) {
 
   // Build up matrix representing right front leg ht. First, a pi/2 rotation in y
   Matrix4f htLegLeftFront = homogRotXyz(0.0f, -M_PI/2.0f, 0.0);
@@ -102,12 +100,11 @@ Matrix4f htLegLeftFront(const Matrix4f& ht_body_center, float body_length, float
   // Next, add the linear translation portion
   htLegLeftFront.block<3,1>(0,3) = Vector3f(body_length/2.0f, 0.0f, -body_width/2.0f);
 
-  // Return the matrix product of ht_body_center and the leg ht
-  return (ht_body_center * htLegLeftFront);
+  return htLegLeftFront;
 }
 
 
-Matrix4f htLegLeftBack(const Matrix4f& ht_body_center, float body_length, float body_width) {
+Matrix4f htLegLeftBack(float body_length, float body_width) {
 
   // Build up matrix representing right back leg ht. First, a pi/2 rotation in y
   Matrix4f htLegLeftBack = homogRotXyz(0.0f, -M_PI/2.0f, 0.0);
@@ -115,8 +112,7 @@ Matrix4f htLegLeftBack(const Matrix4f& ht_body_center, float body_length, float 
   // Next, add the linear translation portion
   htLegLeftBack.block<3,1>(0,3) = Vector3f(-body_length/2.0f, 0.0f, -body_width/2.0f);
 
-  // Return the matrix product of ht_body_center and the leg ht
-  return (ht_body_center * htLegLeftBack);
+  return htLegLeftBack;
 }
 
 
@@ -219,13 +215,4 @@ JointAngles ikine(const Point& point, const LinkLengths& link_lengths, bool is_l
   return joint_angles;
 } 
 
-
-
-
-
-
-
-
-
-
-}
+} // End smk namespace

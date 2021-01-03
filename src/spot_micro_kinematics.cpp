@@ -6,7 +6,7 @@
 
 using namespace Eigen;
 
-namespace smk {
+namespace smk { // Start smk namespace
 
 SpotMicroKinematics::SpotMicroKinematics(float x, float y, float z,
                                          const SpotMicroConfig& smc) 
@@ -58,10 +58,10 @@ void SpotMicroKinematics::setFeetPosGlobalCoordinates(
 
   // Create each leg's starting ht matrix. Made in order of right back, right 
   // front, left front, left back
-  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rb = ht_body * htLegRightBack(smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = ht_body * htLegRightFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = ht_body * htLegLeftFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = ht_body * htLegLeftBack(smc_.body_length, smc_.body_width);
 
 
   // Call each leg's method to set foot position in global coordinates
@@ -145,10 +145,10 @@ LegsFootPos SpotMicroKinematics::getLegsFootPos() {
 
   // Create each leg's starting ht matrix. Made in order of right back, right 
   // front, left front, left back
-  Matrix4f ht_rb = htLegRightBack(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_rf = htLegRightFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lf = htLegLeftFront(ht_body, smc_.body_length, smc_.body_width);
-  Matrix4f ht_lb = htLegLeftBack(ht_body, smc_.body_length, smc_.body_width);
+  Matrix4f ht_rb = ht_body * htLegRightBack(smc_.body_length, smc_.body_width);
+  Matrix4f ht_rf = ht_body * htLegRightFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lf = ht_body * htLegLeftFront(smc_.body_length, smc_.body_width);
+  Matrix4f ht_lb = ht_body * htLegLeftBack(smc_.body_length, smc_.body_width);
 
   ret_val.right_back  = right_back_leg_.getFootPosGlobalCoordinates(ht_rb);
   ret_val.right_front = right_front_leg_.getFootPosGlobalCoordinates(ht_rf);
@@ -165,4 +165,50 @@ BodyState SpotMicroKinematics::getBodyState() {
   return body_state;
 }
 
+
+AllRobotRelativeTransforms SpotMicroKinematics::getRobotTransforms() {
+
+  // Initialize structure
+  AllRobotRelativeTransforms allTransforms;
+
+  // Fill the structure in
+  // Body center
+  allTransforms.bodyCenter = getBodyHt();
+  
+  // Center to four leg corners
+  allTransforms.centerToRightBack = htLegRightBack(smc_.body_length,
+                                                   smc_.body_width);
+
+  allTransforms.centerToRightFront = htLegRightFront(smc_.body_length,
+                                                     smc_.body_width);
+
+  allTransforms.centerToLeftFront = htLegLeftFront(smc_.body_length,
+                                                   smc_.body_width);
+
+  allTransforms.centerToLeftBack = htLegLeftBack(smc_.body_length,
+                                                 smc_.body_width);
+
+  // Right back leg
+  allTransforms.rightBackLeg.t01 = right_back_leg_.getTransform0To1();
+  allTransforms.rightBackLeg.t13 = right_back_leg_.getTransform1To3();
+  allTransforms.rightBackLeg.t34 = right_back_leg_.getTransform3To4();
+
+  // Right front leg
+  allTransforms.rightFrontLeg.t01 = right_front_leg_.getTransform0To1();
+  allTransforms.rightFrontLeg.t13 = right_front_leg_.getTransform1To3();
+  allTransforms.rightFrontLeg.t34 = right_front_leg_.getTransform3To4();
+
+  // Left front leg
+  allTransforms.leftFrontLeg.t01 = left_front_leg_.getTransform0To1();
+  allTransforms.leftFrontLeg.t13 = left_front_leg_.getTransform1To3();
+  allTransforms.leftFrontLeg.t34 = left_front_leg_.getTransform3To4();
+
+  // Left back leg
+  allTransforms.leftBackLeg.t01 = left_back_leg_.getTransform0To1();
+  allTransforms.leftBackLeg.t13 = left_back_leg_.getTransform1To3();
+  allTransforms.leftBackLeg.t34 = left_back_leg_.getTransform3To4();
+
+  return allTransforms;
 }
+
+} // End smk namespace
