@@ -6,7 +6,7 @@
 #include "spot_micro_kinematics/spot_micro_leg.h"
 
 
-namespace smk {
+namespace smk { // Start smk namespace
 
 // Struct to hold joint angles for four legs
 struct LegsJointAngles {
@@ -121,10 +121,7 @@ class SpotMicroKinematics {
 
 };
 
-
-
-
-}
+} // End smk namespace
 
 
 
